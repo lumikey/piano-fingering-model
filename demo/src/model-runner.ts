@@ -45,6 +45,7 @@ export async function runPrediction(parsedNotes: ParsedNote[]): Promise<number[]
     note: n.midi,
     time: n.time,
     duration: n.duration,
+    ...(n.finger !== undefined && { finger: n.finger }),
   }));
 
   // Run hands sequentially — WASM backend doesn't support concurrent session.run()
