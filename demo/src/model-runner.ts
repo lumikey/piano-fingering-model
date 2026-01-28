@@ -3,7 +3,7 @@
  */
 
 import * as ort from "onnxruntime-web";
-import { predictHandFingerings } from "@lumikey/piano-fingering-model";
+import { predictFingerings } from "@lumikey/piano-fingering-model";
 import type { Note, Models } from "@lumikey/piano-fingering-model";
 import type { ParsedNote } from "./musicxml-parser";
 
@@ -48,12 +48,7 @@ export async function runPrediction(parsedNotes: ParsedNote[]): Promise<number[]
     ...(n.finger !== undefined && { finger: n.finger }),
   }));
 
-  // Run hands sequentially — WASM backend doesn't support concurrent session.run()
-  const rightResults = await predictHandFingerings(inputNotes, false, models.right);
-  const leftResults = await predictHandFingerings(inputNotes, true, models.left);
+  const results = await predictFingerings(inputNotes, models);
 
-  const allResults = [...leftResults, ...rightResults];
-  allResults.sort((a, b) => a.time - b.time || a.note - b.note);
-
-  return allResults.map((r) => r.finger!);
+  return results.map((r) => r.finger!);
 }

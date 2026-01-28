@@ -273,10 +273,11 @@ export async function predictFingerings(
 ): Promise<Note[]> {
   const m = models ?? (await loadModels());
 
-  const [leftResults, rightResults] = await Promise.all([
-    predictHandFingerings(notes, true, m.left),
-    predictHandFingerings(notes, false, m.right),
-  ]);
+  // Run sequentially — onnxruntime-web's WASM backend does not support
+  // concurrent session.run() calls, and the performance difference is
+  // negligible since each hand already runs note-by-note internally.
+  const leftResults = await predictHandFingerings(notes, true, m.left);
+  const rightResults = await predictHandFingerings(notes, false, m.right);
 
   const allResults = [...leftResults, ...rightResults];
   allResults.sort((a, b) => a.time - b.time || a.note - b.note);
