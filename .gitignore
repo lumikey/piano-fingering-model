@@ -1,6 +1,9 @@
 # macOS
 .DS_Store
 
+# Node
+node_modules/
+
 # Working/output files
 notes.json
 notes_fingered.json

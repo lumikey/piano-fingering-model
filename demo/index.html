@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Piano Fingering Model – Demo</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Piano Fingering Model</h1>
+      <p class="subtitle">
+        Upload a MusicXML file to automatically predict fingerings
+      </p>
+    </header>
+
+    <main>
+      <div id="drop-zone">
+        <div class="drop-zone-content">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p>Drop a <strong>.musicxml</strong>, <strong>.xml</strong>, or <strong>.mxl</strong> file here</p>
+          <span class="or-text">or</span>
+          <label class="file-label">
+            Browse files
+            <input type="file" id="file-input" accept=".musicxml,.xml,.mxl" hidden />
+          </label>
+        </div>
+      </div>
+
+      <div id="status" class="hidden"></div>
+
+      <div id="sheet-container" class="hidden">
+        <div id="osmd-container"></div>
+      </div>
+
+      <div id="actions" class="hidden">
+        <button id="download-btn" disabled>Download MusicXML with Fingerings</button>
+      </div>
+    </main>
+
+    <footer>
+      <a href="https://github.com/lumikey/piano-fingering-model" target="_blank" rel="noopener">
+        GitHub
+      </a>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
