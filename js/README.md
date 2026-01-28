@@ -12,25 +12,27 @@ npm install @lumikey/piano-fingering-model onnxruntime-node
 npm install @lumikey/piano-fingering-model onnxruntime-web
 ```
 
-## Quick start
+## Quick start (Node.js)
 
 ```typescript
 import { predictFingerings } from "@lumikey/piano-fingering-model";
+import { loadModels } from "@lumikey/piano-fingering-model/node";
 
-// In Node.js, models load automatically from the package
+const models = await loadModels();
+
 const notes = [
   { left: false, note: 60, time: 0, duration: 500 },    // Middle C, right hand
   { left: false, note: 62, time: 500, duration: 500 },   // D
   { left: false, note: 64, time: 1000, duration: 500 },  // E
 ];
 
-const result = await predictFingerings(notes);
+const result = await predictFingerings(notes, models);
 // Each note now has a `finger` property (1=thumb, 2=index, 3=middle, 4=ring, 5=pinky)
 ```
 
 ## Browser usage
 
-In the browser, load the ONNX models yourself and pass them in:
+The main entry point is browser-safe — no Node.js imports. Load the ONNX models yourself and pass them in:
 
 ```typescript
 import { predictFingerings } from "@lumikey/piano-fingering-model";
@@ -58,30 +60,29 @@ const notes = [
   { left: false, note: 65, time: 1500, duration: 500, finger: 4 },  // Force ring finger
 ];
 
-const result = await predictFingerings(notes);
+const result = await predictFingerings(notes, models);
 ```
 
 Fixed fingerings are also visible to the model as lookahead hints, so the predicted notes will account for where the hand needs to be.
 
 ## API
 
-### `predictFingerings(notes, models?)`
+### `predictFingerings(notes, models)`
 
 Predict fingerings for a sequence of notes.
 
 - **`notes`** — Array of `Note` objects (see below).
-- **`models`** *(optional)* — `{ left: InferenceSession, right: InferenceSession }`. If omitted, the bundled models are loaded automatically (Node.js only, cached after first call).
+- **`models`** — `{ left: InferenceSession, right: InferenceSession }`.
 - **Returns** — `Promise<Note[]>` with `finger` populated on every note.
 
-### `loadModels()`
+### `loadModels()` (Node.js only)
 
-Pre-load the bundled ONNX models. Useful if you want to control when model loading happens rather than on first `predictFingerings` call. Sessions are cached — subsequent calls return the same instances.
+Load the bundled ONNX models from the package directory. Imported from the `/node` subpath to keep the main entry point browser-safe. Sessions are cached — subsequent calls return the same instances.
 
 ```typescript
-import { loadModels, predictFingerings } from "@lumikey/piano-fingering-model";
+import { loadModels } from "@lumikey/piano-fingering-model/node";
 
 const models = await loadModels();
-const result = await predictFingerings(notes, models);
 ```
 
 ### `Note`
