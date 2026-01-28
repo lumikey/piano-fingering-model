@@ -13,6 +13,7 @@ python/              Python training and inference
   inference.py       Batch inference from JSON files
   export_onnx.py     Export PyTorch checkpoints to ONNX format
 js/                  TypeScript npm package (@lumikey/piano-fingering-model)
+demo/                Browser demo (GitHub Pages)
 checkpoints/         Trained model weights (.pt)
 data/                Training datasets (.npz)
 ```
@@ -82,9 +83,15 @@ Input: JSON array of note objects:
 
 Notes with a `finger` field (1-5) are treated as fixed constraints. Notes without `finger` are predicted by the model.
 
+## Demo
+
+Try it in the browser: [lumikey.github.io/piano-fingering-model](https://lumikey.github.io/piano-fingering-model/)
+
+Upload a MusicXML file to see predicted fingerings rendered on sheet music.
+
 ## JavaScript / TypeScript
 
-The model is available as an npm package for use in Node.js or the browser. See [js/README.md](js/README.md) for full documentation.
+The model is available as an npm package for use in Node.js or the browser. The main entry point is browser-safe — Node.js helpers are in a separate `/node` subpath. See [js/README.md](js/README.md) for full documentation.
 
 ```bash
 npm install @lumikey/piano-fingering-model onnxruntime-node
@@ -92,11 +99,13 @@ npm install @lumikey/piano-fingering-model onnxruntime-node
 
 ```typescript
 import { predictFingerings } from "@lumikey/piano-fingering-model";
+import { loadModels } from "@lumikey/piano-fingering-model/node";
 
+const models = await loadModels();
 const result = await predictFingerings([
   { left: false, note: 60, time: 0, duration: 500 },
   { left: false, note: 62, time: 500, duration: 500 },
-]);
+], models);
 ```
 
 ### Exporting models for JS

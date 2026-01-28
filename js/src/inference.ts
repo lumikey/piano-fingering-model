@@ -222,62 +222,25 @@ export async function predictHandFingerings(
 
 export type Models = { left: InferenceSession; right: InferenceSession };
 
-let cachedModels: Models | null = null;
-
-/**
- * Load the bundled ONNX models from the package directory.
- *
- * Works in Node.js. For browser usage, create InferenceSession objects
- * manually and pass them to `predictFingerings()` instead.
- *
- * Sessions are cached after the first call.
- */
-export async function loadModels(): Promise<Models> {
-  if (cachedModels) return cachedModels;
-
-  const fs = await import("fs/promises");
-  const path = await import("path");
-
-  const modelsDir = path.resolve(__dirname, "..", "models");
-
-  const [leftBuf, rightBuf] = await Promise.all([
-    fs.readFile(path.join(modelsDir, "fingering_transformer_left.onnx")),
-    fs.readFile(path.join(modelsDir, "fingering_transformer_right.onnx")),
-  ]);
-
-  const [left, right] = await Promise.all([
-    InferenceSession.create(leftBuf.buffer as ArrayBuffer),
-    InferenceSession.create(rightBuf.buffer as ArrayBuffer),
-  ]);
-
-  cachedModels = { left, right };
-  return cachedModels;
-}
-
 /**
  * Predict fingerings for a sequence of piano notes.
  *
  * Notes with an existing `finger` (1-5) are treated as fixed constraints.
  * Notes without `finger` will have one predicted by the model.
  *
- * If `models` is omitted, the bundled ONNX models are loaded automatically
- * (Node.js only). For browser usage, pass pre-loaded InferenceSession objects.
- *
  * @param notes - Array of notes to predict fingerings for
- * @param models - Optional pre-loaded ONNX inference sessions for left and right hand models
+ * @param models - Pre-loaded ONNX inference sessions for left and right hand models
  * @returns All notes with `finger` populated (1=thumb, 5=pinky)
  */
 export async function predictFingerings(
   notes: Note[],
-  models?: Models
+  models: Models
 ): Promise<Note[]> {
-  const m = models ?? (await loadModels());
-
   // Run sequentially — onnxruntime-web's WASM backend does not support
   // concurrent session.run() calls, and the performance difference is
   // negligible since each hand already runs note-by-note internally.
-  const leftResults = await predictHandFingerings(notes, true, m.left);
-  const rightResults = await predictHandFingerings(notes, false, m.right);
+  const leftResults = await predictHandFingerings(notes, true, models.left);
+  const rightResults = await predictHandFingerings(notes, false, models.right);
 
   const allResults = [...leftResults, ...rightResults];
   allResults.sort((a, b) => a.time - b.time || a.note - b.note);

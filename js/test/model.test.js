@@ -5,7 +5,7 @@
 require("onnxruntime-node");
 const { describe, it, before } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadModels, predictFingerings } = require("../dist/index.js");
+const { loadModels, predictFingerings } = require("../dist/node.js");
 
 let models;
 
