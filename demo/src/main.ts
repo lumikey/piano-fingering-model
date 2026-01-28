@@ -108,65 +108,80 @@ async function getXmlString(file: File): Promise<string> {
 
 // --- Core pipeline ---
 
+async function processXmlString(xmlString: string, name: string) {
+  fingeredXml = null;
+  downloadBtn.disabled = true;
+  actionsEl.classList.add("hidden");
+  fileName = name;
+
+  // 1. Parse and render immediately (no fingerings yet)
+  showStatus("Rendering sheet music...", false, true);
+  await osmd.load(xmlString);
+  osmd.render();
+  sheetContainer.classList.remove("hidden");
+
+  // 2. Parse for model input
+  showStatus("Running fingering model...", false, true);
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlString, "text/xml");
+
+  const parseError = doc.querySelector("parsererror");
+  if (parseError) {
+    throw new Error("Invalid XML: " + parseError.textContent);
+  }
+
+  const parsedNotes: ParsedNote[] = parseMusicXML(doc);
+  if (parsedNotes.length === 0) {
+    showStatus("No notes found in the file.", true);
+    return;
+  }
+
+  // 3. Run model
+  const fingers = await runPrediction(parsedNotes);
+
+  // 4. Inject fingerings into XML DOM
+  showStatus("Injecting fingerings...", false, true);
+  injectFingerings(doc, parsedNotes, fingers);
+  fingeredXml = serializeXML(doc);
+
+  // 5. Re-render with fingerings
+  showStatus("Rendering fingerings...", false, true);
+  await osmd.load(fingeredXml);
+  osmd.render();
+
+  // 6. Enable download
+  actionsEl.classList.remove("hidden");
+  downloadBtn.disabled = false;
+
+  showStatus(
+    `Done — predicted fingerings for ${parsedNotes.length} notes.`
+  );
+}
+
 async function processFile(file: File) {
   try {
-    fingeredXml = null;
-    downloadBtn.disabled = true;
-    actionsEl.classList.add("hidden");
-
-    // 1. Read file
     showStatus("Reading file...", false, true);
     const xmlString = await getXmlString(file);
-    fileName = file.name.replace(/\.(mxl|xml|musicxml)$/i, "_fingered.musicxml");
-
-    // 2. Parse and render immediately (no fingerings yet)
-    showStatus("Rendering sheet music...", false, true);
-    await osmd.load(xmlString);
-    osmd.render();
-    sheetContainer.classList.remove("hidden");
-
-    // 3. Parse for model input
-    showStatus("Running fingering model...", false, true);
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlString, "text/xml");
-
-    const parseError = doc.querySelector("parsererror");
-    if (parseError) {
-      throw new Error("Invalid XML: " + parseError.textContent);
-    }
-
-    const parsedNotes: ParsedNote[] = parseMusicXML(doc);
-    if (parsedNotes.length === 0) {
-      showStatus("No notes found in the file.", true);
-      return;
-    }
-
-    // 4. Run model
-    const fingers = await runPrediction(parsedNotes);
-
-    // 5. Inject fingerings into XML DOM
-    showStatus("Injecting fingerings...", false, true);
-    injectFingerings(doc, parsedNotes, fingers);
-    fingeredXml = serializeXML(doc);
-
-    // 6. Re-render with fingerings
-    showStatus("Rendering fingerings...", false, true);
-    await osmd.load(fingeredXml);
-    osmd.render();
-
-    // 7. Enable download
-    actionsEl.classList.remove("hidden");
-    downloadBtn.disabled = false;
-
-    showStatus(
-      `Done — predicted fingerings for ${parsedNotes.length} notes.`
-    );
+    const name = file.name.replace(/\.(mxl|xml|musicxml)$/i, "_fingered.musicxml");
+    await processXmlString(xmlString, name);
   } catch (err) {
     console.error(err);
     showStatus(
       err instanceof Error ? err.message : "An unexpected error occurred.",
       true
     );
+  }
+}
+
+async function loadDefaultFile() {
+  try {
+    const url = `${import.meta.env.BASE_URL}default.musicxml`;
+    const resp = await fetch(url);
+    if (!resp.ok) return; // no default file available, silently skip
+    const xmlString = await resp.text();
+    await processXmlString(xmlString, "arabesque_fingered.musicxml");
+  } catch (err) {
+    console.error("Failed to load default file:", err);
   }
 }
 
@@ -224,3 +239,6 @@ fileInput.addEventListener("change", () => {
 
 // Download button
 downloadBtn.addEventListener("click", downloadXml);
+
+// Load default file on startup
+loadDefaultFile();
