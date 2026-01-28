@@ -1,3 +1,10 @@
+# macOS
+.DS_Store
+
+# Working/output files
+notes.json
+notes_fingered.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
