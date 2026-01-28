@@ -11,11 +11,9 @@ import type { ParsedNote } from "./musicxml-parser";
  * Structure injected:
  *   <notations>
  *     <technical>
- *       <fingering placement="above|below">N</fingering>
+ *       <fingering>N</fingering>
  *     </technical>
  *   </notations>
- *
- * Placement: "above" for right hand (staff 1), "below" for left hand (staff 2).
  */
 export function injectFingerings(
   doc: Document,
@@ -27,7 +25,6 @@ export function injectFingerings(
     if (finger < 1 || finger > 5) continue;
 
     const el = notes[i].element;
-    const placement = notes[i].left ? "below" : "above";
 
     // Remove ALL existing <fingering> elements from this note
     for (const old of Array.from(el.querySelectorAll("fingering"))) {
@@ -48,9 +45,8 @@ export function injectFingerings(
       notations.appendChild(technical);
     }
 
-    // Create <fingering>
+    // Create <fingering> — omit placement to let OSMD position it
     const fingering = doc.createElement("fingering");
-    fingering.setAttribute("placement", placement);
     fingering.textContent = String(finger);
     technical.appendChild(fingering);
   }
