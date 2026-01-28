@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@lumikey/piano-fingering-model": "^0.1.0",
+    "@lumikey/piano-fingering-model": "*",
     "jszip": "^3.10.0",
     "onnxruntime-web": "1.23.2",
     "opensheetmusicdisplay": "^1.8.0"
