@@ -1,6 +1,6 @@
 {
   "name": "@lumikey/piano-fingering-model",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Piano fingering prediction using a Transformer model",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
