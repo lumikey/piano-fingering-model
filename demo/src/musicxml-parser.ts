@@ -12,6 +12,8 @@ export interface ParsedNote {
   time: number;
   /** Duration in milliseconds */
   duration: number;
+  /** Existing fingering from the score (1–5), if present */
+  finger?: number;
   /** Reference to the <note> XML element for injection */
   element: Element;
 }
@@ -140,11 +142,20 @@ export function parseMusicXML(doc: Document): ParsedNote[] {
           const timeMs = cursor * tickMs;
           const durationMs = durationTicks * tickMs;
 
+          // Extract existing fingering if present
+          const fingeringEl = child.querySelector("technical > fingering");
+          let finger: number | undefined;
+          if (fingeringEl) {
+            const f = parseInt(fingeringEl.textContent!.trim(), 10);
+            if (f >= 1 && f <= 5) finger = f;
+          }
+
           notes.push({
             midi,
             left,
             time: timeMs,
             duration: durationMs,
+            finger,
             element: child,
           });
         }

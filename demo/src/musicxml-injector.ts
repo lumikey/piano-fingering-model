@@ -29,6 +29,11 @@ export function injectFingerings(
     const el = notes[i].element;
     const placement = notes[i].left ? "below" : "above";
 
+    // Remove ALL existing <fingering> elements from this note
+    for (const old of Array.from(el.querySelectorAll("fingering"))) {
+      old.parentElement?.removeChild(old);
+    }
+
     // Find or create <notations>
     let notations = el.querySelector("notations");
     if (!notations) {
@@ -41,12 +46,6 @@ export function injectFingerings(
     if (!technical) {
       technical = doc.createElement("technical");
       notations.appendChild(technical);
-    }
-
-    // Remove existing <fingering> if any
-    const existing = technical.querySelector("fingering");
-    if (existing) {
-      technical.removeChild(existing);
     }
 
     // Create <fingering>
