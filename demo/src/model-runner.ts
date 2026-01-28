@@ -3,7 +3,7 @@
  */
 
 import * as ort from "onnxruntime-web";
-import { predictFingerings } from "@lumikey/piano-fingering-model";
+import { predictHandFingerings } from "@lumikey/piano-fingering-model";
 import type { Note, Models } from "@lumikey/piano-fingering-model";
 import type { ParsedNote } from "./musicxml-parser";
 
@@ -18,14 +18,13 @@ async function getModels(): Promise<Models> {
 
   const modelsBase = `${import.meta.env.BASE_URL}models/`;
 
-  const [left, right] = await Promise.all([
-    ort.InferenceSession.create(
-      `${modelsBase}fingering_transformer_left.onnx`
-    ),
-    ort.InferenceSession.create(
-      `${modelsBase}fingering_transformer_right.onnx`
-    ),
-  ]);
+  // Load sequentially — WASM backend doesn't support concurrent session creation
+  const left = await ort.InferenceSession.create(
+    `${modelsBase}fingering_transformer_left.onnx`
+  );
+  const right = await ort.InferenceSession.create(
+    `${modelsBase}fingering_transformer_right.onnx`
+  );
 
   cachedModels = {
     left: left as unknown as Models["left"],
@@ -48,8 +47,12 @@ export async function runPrediction(parsedNotes: ParsedNote[]): Promise<number[]
     duration: n.duration,
   }));
 
-  const results = await predictFingerings(inputNotes, models);
+  // Run hands sequentially — WASM backend doesn't support concurrent session.run()
+  const rightResults = await predictHandFingerings(inputNotes, false, models.right);
+  const leftResults = await predictHandFingerings(inputNotes, true, models.left);
 
-  // Results are sorted by (time, note) — same order as parsedNotes
-  return results.map((r) => r.finger!);
+  const allResults = [...leftResults, ...rightResults];
+  allResults.sort((a, b) => a.time - b.time || a.note - b.note);
+
+  return allResults.map((r) => r.finger!);
 }
