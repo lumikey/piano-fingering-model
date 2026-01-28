@@ -30,6 +30,29 @@ body {
   flex-direction: column;
 }
 
+/* Banner */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #000;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  transition: background-color 0.15s;
+}
+
+.banner:hover {
+  background: #1a1a1a;
+}
+
+.banner img {
+  border-radius: 4px;
+}
+
 header {
   text-align: center;
   padding: 2rem 1rem 1rem;
