@@ -4,6 +4,12 @@ A Transformer model that predicts optimal piano fingerings for MIDI note sequenc
 
 Separate models are trained for left and right hands. The model supports "fill in the blanks" — you can fix some fingerings and let the model predict the rest, taking your constraints into account.
 
+
+## Real-world example - [lumikey](https://lumikey.app) song editor
+
+https://github.com/user-attachments/assets/91960b04-9406-4e2e-8088-17a6da6e21a8
+
+
 ## Project structure
 
 ```
