@@ -4,12 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Piano Fingering Model – Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
-    <a class="banner" href="https://lumikey.app" target="_blank" rel="noopener">
-      <img src="/lumikey-icon.png" alt="Lumikey" width="24" height="24" />
-      <span>Built by <strong>Lumikey</strong> — Learn piano interactively</span>
+    <a
+      class="flex items-center justify-center gap-3 bg-black py-3 px-4 hover:bg-gray-900 transition-colors"
+      href="https://lumikey.app"
+      target="_blank"
+      rel="noopener"
+    >
+      <div class="flex items-center gap-1 text-teal-500">
+        <!-- Lucide AudioLines icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/>
+        </svg>
+        <span class="text-xl font-semibold text-white">lumikey</span>
+      </div>
+      <span class="text-gray-400 text-sm">Learn piano interactively</span>
     </a>
 
     <header>
