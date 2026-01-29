@@ -59,7 +59,7 @@ Trained checkpoints are saved to `checkpoints/`.
 
 The `data/` directory contains preprocessed datasets in `.npz` format:
 
-- `fingering_data_{hand}.npz` — Base dataset
+- `fingering_data_{hand}.npz` — Base fingering dataset
 - `pig_fingering_data_{hand}.npz` — PIG dataset
 - `scale_fingering_data_{hand}.npz` — Scale patterns
 
