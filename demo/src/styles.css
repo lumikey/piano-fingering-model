@@ -185,7 +185,7 @@ main {
     opacity: 1;
   }
   100% {
-    transform: translateY(100vh);
+    transform: translateY(200%);
     opacity: 0;
   }
 }
@@ -207,7 +207,7 @@ main {
     opacity: 1;
   }
   100% {
-    transform: translateY(100vh);
+    transform: translateY(200%);
     opacity: 0;
   }
 }
