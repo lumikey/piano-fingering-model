@@ -9,12 +9,26 @@
   </head>
   <body>
     <a
-      class="flex flex-col items-center justify-center gap-1 bg-black py-3 px-4 hover:bg-gray-900 transition-colors"
+      class="relative flex flex-col items-center justify-center gap-1 bg-black py-4 px-4 hover:bg-gray-900 transition-colors overflow-hidden"
       href="https://lumikey.app"
       target="_blank"
       rel="noopener"
     >
-      <div class="flex items-center gap-1.5 text-white">
+      <!-- Faux Piano Roll Bars Background -->
+      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-30">
+        <!-- Left Hand Bars (Teal) -->
+        <div class="absolute left-[5%] w-2" style="background: linear-gradient(to bottom, #14b8a6, #14b8a6cc); border: 1px solid #14b8a6; box-shadow: 0 0 4px #14b8a6; height: 40px; border-radius: 2px; animation: piano-fall-teal 8s linear infinite; animation-delay: -2s;"></div>
+        <div class="absolute left-[12%] w-3" style="background: linear-gradient(to bottom, #14b8a6, #14b8a6cc); border: 1px solid #14b8a6; box-shadow: 0 0 4px #14b8a6; height: 32px; border-radius: 2px; animation: piano-fall-teal 10s linear infinite; animation-delay: -5s;"></div>
+        <div class="absolute left-[20%] w-2" style="background: linear-gradient(to bottom, #14b8a6, #14b8a6cc); border: 1px solid #14b8a6; box-shadow: 0 0 4px #14b8a6; height: 28px; border-radius: 2px; animation: piano-fall-teal 12s linear infinite; animation-delay: -8s;"></div>
+        <div class="absolute left-[28%] w-2.5" style="background: linear-gradient(to bottom, #14b8a6, #14b8a6cc); border: 1px solid #14b8a6; box-shadow: 0 0 4px #14b8a6; height: 44px; border-radius: 2px; animation: piano-fall-teal 9s linear infinite; animation-delay: -3s;"></div>
+        <!-- Right Hand Bars (Pink) -->
+        <div class="absolute right-[5%] w-2" style="background: linear-gradient(to bottom, #db2777, #db2777cc); border: 1px solid #db2777; box-shadow: 0 0 4px #db2777; height: 36px; border-radius: 2px; animation: piano-fall-pink 9s linear infinite; animation-delay: -4s;"></div>
+        <div class="absolute right-[13%] w-2.5" style="background: linear-gradient(to bottom, #db2777, #db2777cc); border: 1px solid #db2777; box-shadow: 0 0 4px #db2777; height: 30px; border-radius: 2px; animation: piano-fall-pink 11s linear infinite; animation-delay: -7s;"></div>
+        <div class="absolute right-[22%] w-2" style="background: linear-gradient(to bottom, #db2777, #db2777cc); border: 1px solid #db2777; box-shadow: 0 0 4px #db2777; height: 42px; border-radius: 2px; animation: piano-fall-pink 13s linear infinite; animation-delay: -1s;"></div>
+        <div class="absolute right-[30%] w-3" style="background: linear-gradient(to bottom, #db2777, #db2777cc); border: 1px solid #db2777; box-shadow: 0 0 4px #db2777; height: 34px; border-radius: 2px; animation: piano-fall-pink 10s linear infinite; animation-delay: -6s;"></div>
+      </div>
+      <!-- Content -->
+      <div class="relative z-10 flex items-center gap-1.5 text-white">
         <span class="text-sm">built by</span>
         <!-- Lucide AudioLines icon -->
         <svg class="text-teal-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -22,7 +36,7 @@
         </svg>
         <span class="text-lg font-semibold">lumikey</span>
       </div>
-      <span class="text-gray-400 text-sm">Learn Piano The Easy Way</span>
+      <span class="relative z-10 text-gray-400 text-sm">Learn Piano The Easy Way</span>
     </a>
 
     <header>

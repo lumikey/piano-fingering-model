@@ -167,6 +167,21 @@ main {
   to { transform: rotate(360deg); }
 }
 
+/* Piano roll falling bars */
+@keyframes piano-fall-teal {
+  0% { transform: translateY(-100%); opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { transform: translateY(400%); opacity: 0; }
+}
+
+@keyframes piano-fall-pink {
+  0% { transform: translateY(-100%); opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { transform: translateY(400%); opacity: 0; }
+}
+
 .spinner::before {
   content: "";
   display: inline-block;
